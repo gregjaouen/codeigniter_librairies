@@ -71,7 +71,7 @@ class Auth
      * @uses get_user_data
      * @uses logout
      */
-    public function login($login, $pass, $type, $logout=true, $destroy_session=true) : bool {
+    public function login($login, $pass, $type, $logout=true, $destroy_session=false) : bool {
         if (empty($login)||empty($pass)) {
             message("Veuillez remplir les champs");
             return false;
@@ -95,7 +95,7 @@ class Auth
      * 
      * @return void
      */
-    public function logout($destroy_session=true) : void {
+    public function logout($destroy_session=false) : void {
         $this->session->unset_userdata("user");
         $this->session->unset_userdata("user_type");
         if ($destroy_session){
