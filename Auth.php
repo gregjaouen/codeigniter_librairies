@@ -24,8 +24,6 @@
  *      ]
  * ];
  * 
- * The indicated model class must hydrate data from constructor
- *
  * PHP version 7
  *
  * @category    Login
