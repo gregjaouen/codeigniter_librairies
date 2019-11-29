@@ -335,6 +335,8 @@ class Basket {
      * Magic method to access session and load
      */
     public function __get($value){
-        return get_instance()->$value;
+        if ($value === "session" || $value === "load"){
+            return get_instance()->$value;
+        }
     }
 }
