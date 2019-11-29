@@ -27,3 +27,26 @@ $config['auth'] = [
      ]
 ];
 ```
+
+## Basket.php
+Basket manager in session for CodeIgniter 3.x
+
+An element in the basket must be an array.
+
+TODO: API description
+
+### Technical
+#### Basket session format:
+```
+[
+    [
+        Basket::ELEMENT => array,
+        Basket::QTY     => int
+    ],
+    [
+        Basket::ELEMENT => array,
+        Basket::QTY     => int
+    ]
+    ...
+]
+```
