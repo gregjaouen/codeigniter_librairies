@@ -69,7 +69,7 @@ class Auth
      * @uses get_user_data
      * @uses logout
      */
-    public function login($login, $pass, $type, $logout=true, $destroy_session=false) : bool {
+    public function login(string $login, string $pass, string $type, bool $logout=true, bool $destroy_session=false) : bool {
         if (empty($login)||empty($pass)) {
             message("Veuillez remplir les champs");
             return false;
@@ -93,7 +93,7 @@ class Auth
      * 
      * @return void
      */
-    public function logout($destroy_session=false) : void {
+    public function logout(bool $destroy_session=false) : void {
         $this->session->unset_userdata("user");
         $this->session->unset_userdata("user_type");
         if ($destroy_session){
@@ -109,7 +109,7 @@ class Auth
      * 
      * @return bool|void
      */
-    public function authorized($group, $redirect) : ?bool {
+    public function authorized(array $group, string $redirect) : ?bool {
         if (!is_array($group)){
             $group = array($group);
         }
@@ -165,7 +165,7 @@ class Auth
      * 
      * @return bool
      */
-    public function is_type($type) : bool {
+    public function is_type(string $type) : bool {
         return ($this->get_type() == $type);
     }
 
@@ -191,7 +191,7 @@ class Auth
      * 
      * @uses get_conf
      */
-    protected function get_user_data($login, $password, $type) : ?array {
+    protected function get_user_data(string $login, string $password, string $type) : ?array {
         $query = $this->db->get_where($this->get_conf($type, Auth::TABLE),[
             $this->get_conf($type, Auth::LOGIN) => $login,
             $this->get_conf($type, Auth::PASSWORD) => $password,
@@ -208,7 +208,7 @@ class Auth
      * 
      * @return string|null
      */
-    protected function get_conf($type, $name) : ?string {
+    protected function get_conf(string $type, string $name) : ?string {
         return (isset($this->auth_config[$type][$name])) ? $this->auth_config[$type][$name] : null;
     }
 
