@@ -181,7 +181,7 @@ class Auth
     
     
     /**
-     * Returns user data from login/password couple. If not, returns null
+     * Return user data from login/password couple. If not, returns null
      * 
      * @param string        $login         The user's login
      * @param string        $password      The user's password
