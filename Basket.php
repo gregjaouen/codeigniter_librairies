@@ -105,7 +105,7 @@ class Basket {
      * @uses unsafe_add_quantity
      * @uses remove
      */
-    public function editQuantity(array $element, int $quantity) : bool {
+    public function edit_quantity(array $element, int $quantity) : bool {
         if ($quantity > 0) {
             $element_index = $this->get_element_index($element);
             if ($element_index !== null) {
