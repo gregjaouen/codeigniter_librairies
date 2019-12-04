@@ -24,6 +24,15 @@
  *      ]
  * ];
  * 
+ * Session format:
+ * table_name => [
+ *      user_type => type,
+ *      user => [
+ *          login_name => login,
+ *          password_name => password
+ *      ]
+ * ]
+ * 
  * PHP version 7.0
  *
  * @category    Login
@@ -177,6 +186,22 @@ class Auth
      */
     public function get_type() : ?string {
         return $this->session->userdata("user_type");
+    }
+
+
+    /**
+     * Return user's login or null if not logged
+     * 
+     * @return string|null
+     * 
+     * @uses is_logged
+     * @uses get_conf
+     */
+    public function get_login() : ?string {
+        if ($this->is_logged()){
+            return $this->session->user[$this->get_conf($this->session->user_type, Auth::LOGIN)];
+        }
+        return null;
     }
     
     
