@@ -179,6 +179,18 @@ class Basket {
 
 
     /**
+     * Return the sum of element
+     * 
+     * @return int
+     * 
+     * @uses get_basket
+     */
+    public function get_element_sum() : ?int {
+        return array_size($this->get_basket());
+    }
+
+
+    /**
      * Return true if the given element is the basket.
      * 
      * @param array     $element    The element to check presence from the basket
