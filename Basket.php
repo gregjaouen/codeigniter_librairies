@@ -65,7 +65,8 @@ class Basket {
         }
         $element_index = $this->get_element_index($element);
         if ($element_index !== null) { // if element already exists
-            return $this->unsafe_add_quantity($element_index, $quantity);
+            $newQty = $quantity+$this->get_basket()[Basket::QTY];
+            return $this->unsafe_set_quantity($element_index, $newQty);
         }
         else {
             return $this->basket_push($element, $quantity);
@@ -102,14 +103,14 @@ class Basket {
      * @return bool
      * 
      * @uses get_element_index
-     * @uses unsafe_add_quantity
+     * @uses unsafe_set_quantity
      * @uses remove
      */
     public function edit_quantity(array $element, int $quantity) : bool {
         if ($quantity > 0) {
             $element_index = $this->get_element_index($element);
             if ($element_index !== null) {
-                return $this->unsafe_add_quantity($element_index, $quantity);
+                return $this->unsafe_set_quantity($element_index, $quantity);
             }
         }
         else {
@@ -317,22 +318,23 @@ class Basket {
         }
     }
 
+
     /**
      * TODO: identify and handle exception
-     * Delete the element with given element index.
+     * Set the quantity for indexed element.
      * 
      * @param int     $index    The index of the element to be edited
-     * @param int     $qty      The quantity to add
+     * @param int     $qty      The quantity to edit
      * 
      * @return bool
      * 
      * @uses get_basket
      * @uses update_basket_array
      */
-    protected function unsafe_add_quantity(int $index, int $qty) : bool {
+    protected function unsafe_set_quantity(int $index, int $qty) : bool {
         try {
             $basket = $this->get_basket();
-            $basket[$index][Basket::QTY] += $qty;
+            $basket[$index][Basket::QTY] = $qty;
             $this->update_basket_array($basket);
             return true;
         }
