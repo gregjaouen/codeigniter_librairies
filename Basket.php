@@ -5,6 +5,16 @@
  * 
  * An element in the basket must be an array.
  * 
+ * Must set $config['basket'] in config.php
+ * This must contain:
+ *          - 'id_key'      :   for key to identify an element in the basket
+ * 
+ * Example:
+ * $config['basket'] = [
+ *      'id_key' => 'a_key'
+ * ];
+ * 
+ * 
  * TODO: API description
  * 
  * Technical:
@@ -40,8 +50,12 @@ class Basket {
     protected const QTY = 'qty';
     protected const BASKET = 'basket';
 
+    protected const CONFIG_ID_KEY = 'id_key';
+
+    protected $auth_config;
 
     public function __construct(){
+        $this->load_config(Basket::BASKET, [Basket::CONFIG_ID_KEY]);
         $this->load->library('session');
         $this->set_session();
     }
@@ -65,7 +79,7 @@ class Basket {
         }
         $element_index = $this->get_element_index($element);
         if ($element_index !== null) { // if element already exists
-            $newQty = $quantity+$this->get_basket()[Basket::QTY];
+            $newQty = $quantity + $this->get_basket()[$element_index][Basket::QTY];
             return $this->unsafe_set_quantity($element_index, $newQty);
         }
         else {
@@ -217,11 +231,21 @@ class Basket {
      */
     public function get_element_index(array $element) : ?int {
         foreach ($this->get_basket() as $index => $content) {
-            if ($this->elements_are_equals($content[Basket::ELEMENT], $element)) {
+            if ($this->elements_have_same_id_key($content[Basket::ELEMENT], $element)) {
                 return $index;
             }
         }
         return null;
+    }
+
+
+    /**
+     * Get id_key
+     *
+     * @return string|null
+     */
+    public function get_id_key() : string {
+        return $this->auth_config[Basket::CONFIG_ID_KEY];
     }
 
 
@@ -245,8 +269,12 @@ class Basket {
      * 
      * @return bool
      */
-    protected function elements_are_equals(array $a, array $b) : bool {
-        return empty(array_diff($a, $b));
+    protected function elements_have_same_id_key(array $a, array $b) : bool {
+        $id_key = $this->get_id_key();
+        if (isset($a[$id_key]) && isset($b[$id_key])){
+            return ($a[$id_key] === $b[$id_key]);
+        }
+        return false;
     }
 
 
@@ -342,13 +370,35 @@ class Basket {
             return false;
         }
     }
+
+
+    /**
+     * Check if config.php is correctly setted
+     * 
+     * @return void
+     * @throws UnexpectedValueException $config[needed] is missing
+     */
+    protected function load_config(string $item_name, array $keys_to_check) : void {
+        if ($this->config->item($item_name) && !empty($this->config->item($item_name))){
+            $auth_config = $this->config->item($item_name);
+            foreach($keys_to_check as $key){
+                if (!isset($auth_config[$key]) || $auth_config[$key] == null){
+                    throw new UnexpectedValueException(sprintf("\$config[%s][%s] is not setted <br>", $item_name, $key));
+                }
+            }
+            $this->auth_config = $auth_config;
+        }
+        else {
+            throw new UnexpectedValueException(sprintf("\$config[%s] is not setted <br>", $item_name));
+        }
+    }
     
     
     /**
      * Magic method to access session and load
      */
     public function __get($value){
-        if ($value === "session" || $value === "load"){
+        if ($value === "session" || $value === "load" || $value === "config"){
             return get_instance()->$value;
         }
     }
