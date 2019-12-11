@@ -186,7 +186,7 @@ class Basket {
      * @uses get_basket
      */
     public function get_element_sum() : ?int {
-        return array_size($this->get_basket());
+        return sizeof($this->get_basket());
     }
 
 
