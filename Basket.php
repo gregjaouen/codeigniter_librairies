@@ -155,7 +155,6 @@ class Basket {
         $out = 0.0;
         foreach ($this->get_basket() as $_index => $content) {
             if (isset($content[Basket::ELEMENT][$price_field_name])) {
-                echo sprintf("Unit price: %f<br>", $content[Basket::ELEMENT][$price_field_name]);
                 $out += (float) $content[Basket::ELEMENT][$price_field_name] * $content[Basket::QTY];
             }
         }
