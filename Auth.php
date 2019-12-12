@@ -5,22 +5,26 @@
  * 
  * Must set $config['auth'] in config.php
  * This must contain at least one type, as an associative array.
- * This array must contain:
+ * This array have to contain:
  *          - 'table'       :   for the table to look at
  *          - 'login'       :   the field name for the login
  *          - 'password'    :   the field name for the password
+ * This array might contain:
+ *          - 'encoding'    :   ["plaintext" | "bcrypt"];
+ * The encoding is setted by default as "bcrypt"
  * 
  * Example:
  * $config['auth'] = [
  *      'customer' => [
- *          'table'     => 'customer',
- *          'login'     => 'customer_mail',
- *          'password'  => 'customer_password',
+ *          'table'     =>  'customer',
+ *          'login'     =>  'customer_mail',
+ *          'password'  =>  'customer_password'
  *      ], [
  *      'seller' => [
- *          'table'     => 'seller',
- *          'login'     => 'seller_mail',
- *          'password'  => 'seller_password',
+ *          'table'     =>  'seller',
+ *          'login'     =>  'seller_mail',
+ *          'password'  =>  'seller_password',
+ *          'encoding'  =>  'plaintext'
  *      ]
  * ];
  * 
@@ -36,7 +40,7 @@
  * PHP version 7.0
  *
  * @category    Login
- * @version     0.3
+ * @version     0.5
  * @author      Grégory Jaouën <gregory.jaouen@tutanota.com>
  * @license     http://opensource.org/licenses/BSD-3-Clause 3-clause BSD
  * @link        https://github.com/gregjaouen/codeigniter_librairies
@@ -52,12 +56,17 @@ class Auth
     private const LOGIN = 'login';
     private const PASSWORD = 'password';
     private const TABLE = 'table';
+    private const ENCODING = 'encoding';
+
+    private const ENCODING_PLAINTEXT = "plaintext";
 
     private $auth_config;
 
 
     public function __construct(){
-        $this->load_config();
+        $this->load_config(Auth::AUTH, [
+            Auth::LOGIN, Auth::PASSWORD, Auth::TABLE
+        ]);
         $this->load->database();
         $this->load->library('session');
         $this->load->helper('url');
@@ -80,7 +89,6 @@ class Auth
      */
     public function login(string $login, string $pass, string $type, bool $logout=true, bool $destroy_session=false) : bool {
         if (empty($login)||empty($pass)) {
-            message("Veuillez remplir les champs");
             return false;
         }
         $user_data = $this->get_user_data($login, $pass, $type);
@@ -132,14 +140,17 @@ class Auth
     /**
      * Check if config.php is correctly setted
      * 
+     * @param string    $item_name          The name of config container
+     * @param string    $keys_to_check      List of needed keys 
+     * 
      * @return void
      * @throws UnexpectedValueException $config[needed] is missing
      */
-    protected function load_config() : void {
-        if ($this->config->item(Auth::AUTH) && !empty($this->config->item(Auth::AUTH))){
-            $auth_config = $this->config->item(Auth::AUTH);
+    protected function load_config(string $item_name, array $keys_to_check) : void {
+        if ($this->config->item($item_name) && !empty($this->config->item($item_name))){
+            $auth_config = $this->config->item($item_name);
             foreach($auth_config as $type => $content){
-                foreach([Auth::LOGIN, Auth::PASSWORD, Auth::TABLE] as $tester){
+                foreach($keys_to_check as $tester){
                     if (!isset($content[$tester]) || $content[$tester] == null){
                         throw new UnexpectedValueException(sprintf("\$config[%s] is not setted <br>", $tester));
                     }
@@ -148,7 +159,7 @@ class Auth
             $this->auth_config = $auth_config;
         }
         else {
-            throw new UnexpectedValueException("\$config[auth] is not setted <br>");
+            throw new UnexpectedValueException(sprintf("\$config[%s] is not setted <br>", $item_name));
         }
     }
 
@@ -218,10 +229,37 @@ class Auth
      */
     protected function get_user_data(string $login, string $password, string $type) : ?array {
         $query = $this->db->get_where($this->get_conf($type, Auth::TABLE),[
-            $this->get_conf($type, Auth::LOGIN) => $login,
-            $this->get_conf($type, Auth::PASSWORD) => $password,
+            $this->get_conf($type, Auth::LOGIN) => $login
         ]);
-        return $query->row_array();
+        $data = $query->row_array();
+        if ($data){
+            if ($this->check_password($password, $data[$this->get_conf($type, Auth::PASSWORD)], $type)){
+                return $data;
+            }
+        }
+        return NULL;
+    }
+
+
+    /**
+     * Check user password with setted encoding method
+     * 
+     * @param string        $input_password         The input password
+     * @param string        $db_password            The password from the db
+     * @param string        $type                   The type where to find user
+     * 
+     * @return bool
+     * 
+     * @uses get_conf
+     */
+    protected function check_password(string $input_password, string $db_password, string $type) : bool {
+        switch ($this->get_conf($type, Auth::ENCODING)) {
+            case Auth::ENCODING_PLAINTEXT :
+                return ($input_password === $db_password);
+            
+            default:
+                return password_verify($input_password, $db_password);
+        }
     }
 
 
