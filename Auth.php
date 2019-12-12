@@ -152,7 +152,7 @@ class Auth
             foreach($auth_config as $type => $content){
                 foreach($keys_to_check as $tester){
                     if (!isset($content[$tester]) || $content[$tester] == null){
-                        throw new UnexpectedValueException(sprintf("\$config[%s] is not setted <br>", $tester));
+                        throw new UnexpectedValueException(sprintf("\$config[%s][%s] is not setted <br>", $item_name, $tester));
                     }
                 }
             }
