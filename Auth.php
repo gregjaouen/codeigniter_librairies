@@ -11,7 +11,7 @@
  *          - 'password'    :   the field name for the password
  * This array might contain:
  *          - 'encoding'    :   ["plaintext" | "bcrypt"];
- * The encoding is setted by default as "bcrypt"
+ * The encoding "bcrypt" is set as default
  * 
  * Example:
  * $config['auth'] = [
