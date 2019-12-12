@@ -6,7 +6,7 @@
  * An element in the basket must be an array.
  * 
  * Must set $config['basket'] in config.php
- * This must contain:
+ * This have to contain:
  *          - 'id_key'      :   for key to identify an element in the basket
  * 
  * Example:
@@ -374,6 +374,9 @@ class Basket {
 
     /**
      * Check if config.php is correctly setted
+     * 
+     * @param string    $item_name          The name of config container
+     * @param string    $keys_to_check      List of needed keys 
      * 
      * @return void
      * @throws UnexpectedValueException $config[needed] is missing
