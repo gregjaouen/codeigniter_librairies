@@ -138,33 +138,6 @@ class Auth
 
 
     /**
-     * Check if config.php is correctly setted
-     * 
-     * @param string    $item_name          The name of config container
-     * @param string    $keys_to_check      List of needed keys 
-     * 
-     * @return void
-     * @throws UnexpectedValueException $config[needed] is missing
-     */
-    protected function load_config(string $item_name, array $keys_to_check) : void {
-        if ($this->config->item($item_name) && !empty($this->config->item($item_name))){
-            $auth_config = $this->config->item($item_name);
-            foreach($auth_config as $type => $content){
-                foreach($keys_to_check as $tester){
-                    if (!isset($content[$tester]) || $content[$tester] == null){
-                        throw new UnexpectedValueException(sprintf("\$config[%s][%s] is not setted <br>", $item_name, $tester));
-                    }
-                }
-            }
-            $this->auth_config = $auth_config;
-        }
-        else {
-            throw new UnexpectedValueException(sprintf("\$config[%s] is not setted <br>", $item_name));
-        }
-    }
-
-
-    /**
      * Return the login state
      * 
      * @return bool
@@ -214,6 +187,33 @@ class Auth
         }
         return null;
     }
+
+
+    /**
+     * Check if config.php is correctly setted
+     * 
+     * @param string    $item_name          The name of config container
+     * @param string    $keys_to_check      List of needed keys 
+     * 
+     * @return void
+     * @throws UnexpectedValueException $config[needed] is missing
+     */
+    protected function load_config(string $item_name, array $keys_to_check) : void {
+        if ($this->config->item($item_name) && !empty($this->config->item($item_name))){
+            $auth_config = $this->config->item($item_name);
+            foreach($auth_config as $type => $content){
+                foreach($keys_to_check as $tester){
+                    if (!isset($content[$tester]) || $content[$tester] == null){
+                        throw new UnexpectedValueException(sprintf("\$config[%s][%s] is not setted <br>", $item_name, $tester));
+                    }
+                }
+            }
+            $this->auth_config = $auth_config;
+        }
+        else {
+            throw new UnexpectedValueException(sprintf("\$config[%s] is not setted <br>", $item_name));
+        }
+    }    
     
     
     /**
