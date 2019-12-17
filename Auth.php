@@ -5,7 +5,7 @@
  * 
  * Must set $config['auth'] in config.php
  * This must contain at least one type, as an associative array.
- * This array have to contain:
+ * This array has to contain:
  *          - 'table'       :   for the table to look at
  *          - 'login'       :   the field name for the login
  *          - 'password'    :   the field name for the password

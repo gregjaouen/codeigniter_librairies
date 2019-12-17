@@ -6,7 +6,7 @@
  * An element in the basket must be an array.
  * 
  * Must set $config['basket'] in config.php
- * This have to contain:
+ * This has to contain:
  *          - 'id_key'      :   for key to identify an element in the basket
  * 
  * Example:
