@@ -70,6 +70,7 @@ class Basket {
      * @return bool
      * 
      * @uses get_element_index
+     * @uses get_basket
      * @uses unsafe_add_quantity
      * @uses basket_push
      */
@@ -256,7 +257,7 @@ class Basket {
      * @return int|null
      * 
      * @uses get_basket
-     * @uses elements_are_equals
+     * @uses elements_have_same_id_key
      */
     public function get_element_index(array $element) : ?int {
         foreach ($this->get_basket() as $index => $content) {
@@ -297,6 +298,8 @@ class Basket {
      * @param array     $b    The second array to test
      * 
      * @return bool
+     * 
+     * @uses get_id_key
      */
     protected function elements_have_same_id_key(array $a, array $b) : bool {
         $id_key = $this->get_id_key();
