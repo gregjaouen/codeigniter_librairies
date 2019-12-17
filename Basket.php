@@ -338,7 +338,9 @@ class Basket {
      */
     protected function basket_push(array $element, int $quantity) : bool {
         try {
-            $element = array($element);
+            if (!is_array($element)){
+                $element = array($element);
+            }
             $basket = $this->get_basket();
             array_push($basket, [
                 Basket::ELEMENT => $element,
