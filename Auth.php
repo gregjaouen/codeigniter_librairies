@@ -19,7 +19,7 @@
  *          'table'     =>  'customer',
  *          'login'     =>  'customer_mail',
  *          'password'  =>  'customer_password'
- *      ], [
+ *      ],
  *      'seller' => [
  *          'table'     =>  'seller',
  *          'login'     =>  'seller_mail',
