@@ -75,9 +75,8 @@ class Basket {
      * @uses basket_push
      */
     public function add(array $element, int $quantity=1) : bool{
-        if ($quantity <= 0){
-            $quantity = 1;
-        }
+        $quantity = ($quantity > 0) ? $quantity : $quantity = 1;
+
         $element_index = $this->get_element_index($element);
         if ($element_index !== null) { // if element already exists
             $newQty = $quantity + $this->get_basket()[$element_index][Basket::QTY];
@@ -104,6 +103,7 @@ class Basket {
      */
     public function substract(array $element, int $quantity=1) : bool{
         $quantity = ($quantity > 0) ? $quantity : $quantity = 1;
+
         $element_index = $this->get_element_index($element);
         if ($element_index !== null) {
             $newQty = $this->get_basket()[$element_index][Basket::QTY] - $quantity;
@@ -338,9 +338,7 @@ class Basket {
      */
     protected function basket_push(array $element, int $quantity) : bool {
         try {
-            if (!is_array($element)){
-                $element = array($element);
-            }
+            $element = array($element);
             $basket = $this->get_basket();
             array_push($basket, [
                 Basket::ELEMENT => $element,
