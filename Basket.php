@@ -34,7 +34,7 @@
  * PHP version 7.0
  *
  * @category    Basket
- * @version     0.1
+ * @version     0.5
  * @author      Grégory Jaouën <gregory.jaouen@tutanota.com>
  * @license     http://opensource.org/licenses/BSD-3-Clause 3-clause BSD
  * @link        https://github.com/gregjaouen/codeigniter_librairies
@@ -85,6 +85,35 @@ class Basket {
         else {
             return $this->basket_push($element, $quantity);
         }
+    }
+
+
+    /**
+     * Substract an element to the basket. If element has his quantity equals to 0 or less, then remove it. Returns true if the element is correctly edited or removed
+     * 
+     * @param array     $element    The element to add to the basket
+     * @param int       $quantity   The quantity of element to add
+     * 
+     * @return bool
+     * 
+     * @uses get_element_index
+     * @uses get_basket
+     * @uses unsafe_add_quantity
+     * @uses basket_delete
+     */
+    public function substract(array $element, int $quantity=1) : bool{
+        $quantity = ($quantity > 0) ? $quantity : $quantity = 1;
+        $element_index = $this->get_element_index($element);
+        if ($element_index !== null) {
+            $newQty = $this->get_basket()[$element_index][Basket::QTY] - $quantity;
+            if ($newQty > 0){
+                return $this->unsafe_set_quantity($element_index, $newQty);
+            }
+            else {
+                return $this->basket_delete($element_index);
+            }
+        }
+        return false;
     }
 
 
